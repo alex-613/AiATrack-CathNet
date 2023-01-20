@@ -9,7 +9,10 @@ def local_env_settings():
     settings.got10k_path = 'PATH/GOT10k'
     settings.got_packed_results_path = ''
     settings.got_reports_path = ''
-    settings.lasot_path = 'PATH/LaSOT'
+    #settings.lasot_path = 'PATH/LaSOT'
+    settings.lasot_path = '/media/atr17/HDD Storage/Datasets_Download/LaSOT/LaSOT'
+    # Set your image path for the catheter
+    settings.catheter_path = '/media/atr17/HDD Storage/Datasets_Download/Catheter_Detection/Images'
     settings.network_path = 'PATH/AiATrack/test/networks'  # Where tracking networks are stored
     settings.nfs_path = 'PATH/NFS30'
     settings.otb_path = 'PATH/OTB100'

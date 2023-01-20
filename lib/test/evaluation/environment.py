@@ -15,6 +15,7 @@ class EnvSettings:
         self.uav_path = ''
         self.got10k_path = ''
         self.lasot_path = ''
+        self.catheter_path = ''
         self.trackingnet_path = ''
 
         self.got_packed_results_path = ''

@@ -64,6 +64,11 @@ def opencv_loader(path):
         print(e)
         return None
 
+def pil_loader(path):
+    im_frame = Image.open(path)
+    im_frame = im_frame.convert('RGB')
+
+    return np.array(im_frame.getdata())
 
 def jpeg4py_loader_w_failsafe(path):
     """

@@ -7,6 +7,7 @@ DatasetInfo = namedtuple('DatasetInfo', ['module', 'class_name', 'kwargs'])
 
 pt = 'lib.test.evaluation.%sdataset'  # Useful abbreviations to reduce the clutter
 
+# Expand this dictionary to include the catheter tracking dataset
 dataset_dict = dict(
     otb=DatasetInfo(module=pt % 'otb', class_name='OTBDataset', kwargs=dict()),
     nfs=DatasetInfo(module=pt % 'nfs', class_name='NFSDataset', kwargs=dict()),
@@ -15,7 +16,9 @@ dataset_dict = dict(
     got10k_test=DatasetInfo(module=pt % 'got10k', class_name='GOT10KDataset', kwargs=dict(split='test')),
     got10k_val=DatasetInfo(module=pt % 'got10k', class_name='GOT10KDataset', kwargs=dict(split='val')),
     lasot=DatasetInfo(module=pt % 'lasot', class_name='LaSOTDataset', kwargs=dict(subset='testing')),
-    lasot_ext=DatasetInfo(module=pt % 'lasot', class_name='LaSOTDataset', kwargs=dict(subset='extension'))
+    lasot_ext=DatasetInfo(module=pt % 'lasot', class_name='LaSOTDataset', kwargs=dict(subset='extension')),
+    catheter_tracking_test=DatasetInfo(module=pt % 'catheter', class_name='CatheterDataset', kwargs=dict(subset='Val'))
+
 )
 
 

@@ -4,7 +4,7 @@ from torch.utils.data.distributed import DistributedSampler
 import lib.train.data.transforms as tfm
 from lib.train.data import sampler, opencv_loader, processing, LTRLoader
 # Datasets related
-from lib.train.dataset import Lasot, Got10k, MSCOCOSeq, TrackingNet
+from lib.train.dataset import Lasot, Got10k, MSCOCOSeq, TrackingNet, Catheter_tracking
 
 
 def update_settings(settings, cfg):
@@ -29,7 +29,7 @@ def names2datasets(name_list: list, settings, image_loader):
     assert isinstance(name_list, list)
     datasets = []
     for name in name_list:
-        assert name in ['GOT10K_train', 'GOT10K_vot_train', 'LASOT', 'COCO17', 'TRACKINGNET']
+        assert name in ['GOT10K_train', 'GOT10K_vot_train', 'LASOT', 'COCO17', 'TRACKINGNET','Catheter_tracking']
         if name == 'LASOT':
             datasets.append(Lasot(settings.env.lasot_dir, split='train', image_loader=image_loader))
         elif name == 'GOT10K_train':
@@ -41,12 +41,15 @@ def names2datasets(name_list: list, settings, image_loader):
         elif name == 'TRACKINGNET':
             datasets.append(
                 TrackingNet(settings.env.trackingnet_dir, set_ids=list(range(12)), image_loader=image_loader))
+        elif name == 'Catheter_tracking':
+            datasets.append(Catheter_tracking(settings.env.catheter_tracking_dir, mode='Train'))
     return datasets
 
 
 def build_dataloaders(cfg, settings):
-    # Data transform
-    transform_joint = tfm.Transform(tfm.ToGrayscale(probability=0.05),
+    # Data transform: Applies some augmentations
+    # We changed the probability of using gray scale to be 0 because the image is gray scale...
+    transform_joint = tfm.Transform(tfm.ToGrayscale(probability=0.00),
                                     tfm.RandomHorizontalFlip(probability=0.5))
 
     transform_train = tfm.Transform(tfm.ToTensorAndJitter(0.2),
@@ -56,7 +59,9 @@ def build_dataloaders(cfg, settings):
     # The tracking pairs processing module
     output_sz = settings.output_sz
     search_area_factor = settings.search_area_factor
-
+    
+    # This data loader adds some noise to the bounding box, then a square is cropped from the image.
+    # Please check the processing scipt for more information
     data_processing_train = processing.AIATRACKProcessing(search_area_factor=search_area_factor,
                                                           output_sz=output_sz,
                                                           center_jitter_factor=settings.center_jitter_factor,
@@ -67,6 +72,8 @@ def build_dataloaders(cfg, settings):
                                                           settings=settings)
 
     # Train sampler and loader
+    # The sampler is responsible for sampling frames from training sequences to form batches
+    # This could be one of the places where things went wrong
     dataset_train = sampler.TrackingSampler(
         datasets=names2datasets(cfg.DATA.TRAIN.DATASETS_NAME, settings, opencv_loader),
         p_datasets=cfg.DATA.TRAIN.DATASETS_RATIO,
@@ -74,8 +81,12 @@ def build_dataloaders(cfg, settings):
         max_gap=cfg.DATA.MAX_SAMPLE_INTERVAL,
         processing=data_processing_train)
 
+    # The sampler becomes zero if we are not using distributed processing
     train_sampler = DistributedSampler(dataset_train) if settings.local_rank != -1 else None
+
     shuffle = False if settings.local_rank != -1 else True
+
+    # This could another place where things went wrong, the dataloader is built incorectly.
 
     loader_train = LTRLoader('train', dataset_train, training=True, batch_size=cfg.TRAIN.BATCH_SIZE, shuffle=shuffle,
                              num_workers=cfg.TRAIN.NUM_WORKER, drop_last=True, stack_dim=1, sampler=train_sampler)

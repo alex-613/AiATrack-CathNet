@@ -19,9 +19,11 @@ DATA:
   TRAIN:
     DATASETS_NAME:
       - LASOT
+      - Catheter_tracking
     DATASETS_RATIO:
+      - 5
       - 1
-    SAMPLE_PER_EPOCH: 60000
+    SAMPLE_PER_EPOCH: 1000
 MODEL:
   BACKBONE:
     DILATION: False

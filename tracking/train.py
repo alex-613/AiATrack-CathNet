@@ -13,7 +13,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='parse args for training')
     # For train
     parser.add_argument('--script', type=str, default='aiatrack', help='training script name')
-    parser.add_argument('--config', type=str, default='baseline', help='yaml configure file name')
+    parser.add_argument('--config', type=str, default='catheter', help='yaml configure file name')
     parser.add_argument('--save', type=str, default='.',
                         help='root directory to save checkpoints, logs, and tensorboard')
     parser.add_argument('--mode', type=str, choices=['single', 'multiple'], default='single',
@@ -26,6 +26,7 @@ def parse_args():
 
 
 def main():
+
     args = parse_args()
     if args.mode == 'single':
         train_cmd = 'python lib/train/run_training.py --script %s --config %s --save_dir %s ' \

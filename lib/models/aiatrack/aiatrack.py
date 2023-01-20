@@ -121,13 +121,18 @@ class AIATRACK(BASIC):
                 refer_mem = self.transformer.run_encoder(refer_dic_list[i]['feat'], refer_dic_list[i]['mask'],
                                                          refer_dic_list[i]['pos'], refer_dic_list[i]['inr'])
                 refer_mem_list.append(refer_mem)
-                refer_emb = torch.bmm(refer_reg_list[i], embed_bank).transpose(0, 1)
+                refer_emb = torch.bmm(refer_reg_list[i], embed_bank).transpose(0, 1) # bmm stands for batch matrix multiplication
                 refer_emb_list.append(refer_emb)
                 refer_pos_list.append(refer_dic_list[i]['inr'])
                 refer_msk_list.append(refer_dic_list[i]['mask'])
 
         output_embed = self.transformer.run_decoder(search_mem, refer_mem_list, refer_emb_list, refer_pos_list,
                                                     refer_msk_list)
+        # Search Mem is the frame that you are searching in.
+        # Refer mem list is reference frames, it can be long or short term frames. and it is passed through encoder.
+        # Refer emb list: What does emb stand for? Embedding?
+        # Refer pos list: Reference frame's positional encoding
+        # Refer mask list: Reference frame's masks
 
         return output_embed, search_mem, search_dic['inr'], search_dic['mask']
 
@@ -198,7 +203,10 @@ class AIATRACK(BASIC):
 
 
 def build_aiatrack(cfg):
-    backbone = build_backbone(cfg)  # Backbone and positional encoding are built together
+    """
+    Builds the aiatrack pipeline that is mentioned in the paper for analysing sequential data
+    """
+    backbone = build_backbone(cfg)  # Backbone and positional encoding are built together. This gives you: the resnet 50 backbone, the positional encoding of the transformer and of the AiA module.
     transformer = build_transformer(cfg)
     box_head = build_box_head(cfg)
     iou_head = build_iou_head(cfg)

@@ -44,20 +44,22 @@ class Lasot(BaseVideoDataset):
 
         # Keep a list of all classes
         self.class_list = [f for f in os.listdir(self.root)]
+        #input(self.class_list)
         self.class_to_id = {cls_name: cls_id for cls_id, cls_name in enumerate(self.class_list)}
 
         self.sequence_list = self._build_sequence_list(vid_ids, split)
-
+        #input(self.sequence_list)
         if data_fraction is not None:
             self.sequence_list = random.sample(self.sequence_list, int(len(self.sequence_list) * data_fraction))
 
         self.seq_per_class = self._build_class_list()
-
+        #input(self.seq_per_class)
     def _build_sequence_list(self, vid_ids=None, split=None):
         if split is not None:
             if vid_ids is not None:
                 raise ValueError('ERROR: cannot set both split_name and vid_ids')
             ltr_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..')
+            #input(ltr_path)
             if split == 'train':
                 file_path = os.path.join(ltr_path, 'data_specs', 'lasot_train_split.txt')
             else:
@@ -78,7 +80,7 @@ class Lasot(BaseVideoDataset):
                 seq_per_class[class_name].append(seq_id)
             else:
                 seq_per_class[class_name] = [seq_id]
-
+        #input(seq_per_class)
         return seq_per_class
 
     def get_name(self):
@@ -107,6 +109,8 @@ class Lasot(BaseVideoDataset):
 
     def _read_target_visible(self, seq_path):
         # Read full occlusion and out_of_view
+        # In these two files, if the object is occluded, the file will give a 1 bit
+        # If the object is out of view, the file will also give a 1 bit
         occlusion_file = os.path.join(seq_path, 'full_occlusion.txt')
         out_of_view_file = os.path.join(seq_path, 'out_of_view.txt')
 
@@ -115,6 +119,7 @@ class Lasot(BaseVideoDataset):
         with open(out_of_view_file, 'r') as f:
             out_of_view = torch.ByteTensor([int(v) for v in list(csv.reader(f))[0]])
 
+        # If the target is not occluded and not out of view it is visible
         target_visible = ~occlusion & ~out_of_view
 
         return target_visible
@@ -136,6 +141,7 @@ class Lasot(BaseVideoDataset):
         return {'bbox': bbox, 'valid': valid, 'visible': visible}
 
     def _get_frame_path(self, seq_path, frame_id):
+        #print(os.path.join(seq_path, 'img', '{:08}.jpg'.format(frame_id + 1)))
         return os.path.join(seq_path, 'img', '{:08}.jpg'.format(frame_id + 1))  # Frames start from 1
 
     def _get_frame(self, seq_path, frame_id):
@@ -153,7 +159,7 @@ class Lasot(BaseVideoDataset):
 
     def get_frames(self, seq_id, frame_ids, anno=None):
         seq_path = self._get_sequence_path(seq_id)
-
+        #input(seq_path)
         obj_class = self._get_class(seq_path)
         frame_list = [self._get_frame(seq_path, f_id) for f_id in frame_ids]
 

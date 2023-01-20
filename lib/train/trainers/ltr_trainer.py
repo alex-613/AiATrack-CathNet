@@ -58,8 +58,9 @@ class LTRTrainer(BaseTrainer):
         torch.set_grad_enabled(loader.training)
 
         self._init_timing()
-
+        #print(len(loader))
         for i, data in enumerate(loader, 1):
+            # Everything in this loop isnt triggered
             # Get inputs
             if self.move_data_to_gpu:
                 data = data.to(self.device)
@@ -68,6 +69,7 @@ class LTRTrainer(BaseTrainer):
             data['settings'] = self.settings
             # Forward pass
             loss, stats = self.actor(data)
+            #print(stats)
 
             # Backward pass and update weights
             if loader.training:
@@ -143,6 +145,7 @@ class LTRTrainer(BaseTrainer):
                     lr_list = self.lr_scheduler._get_lr(self.epoch)
                 for i, lr in enumerate(lr_list):
                     var_name = 'LearningRate/group{}'.format(i)
+                    #print(self.stats[loader.name].keys())
                     if var_name not in self.stats[loader.name].keys():
                         self.stats[loader.name][var_name] = StatValue()
                     self.stats[loader.name][var_name].update(lr)

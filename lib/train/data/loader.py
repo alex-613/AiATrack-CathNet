@@ -184,10 +184,13 @@ class LTRLoader(torch.utils.data.dataloader.DataLoader):
             if stack_dim == 0:
                 collate_fn = ltr_collate
             elif stack_dim == 1:
-                collate_fn = ltr_collate_stack1
+                collate_fn = ltr_collate_stack1 # Forms a stacked batch dataset along the dimension
             else:
                 raise ValueError('ERROR: stack dim no supported, must be 0 or 1')
 
+        # Calls the pytorch dataloader superclass
+        # This combines a dataset and a sampler, and provides an iterable over the given dataset
+        # The data loader supports maptyle and iterable dataset
         super(LTRLoader, self).__init__(dataset, batch_size, shuffle, sampler, batch_sampler,
                                         num_workers, collate_fn, pin_memory, drop_last,
                                         timeout, worker_init_fn)

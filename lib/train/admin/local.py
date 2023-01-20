@@ -3,7 +3,15 @@ class EnvironmentSettings:
         self.workspace_dir = 'PATH/AiATrack'  # Base directory for saving network checkpoints
         self.tensorboard_dir = self.workspace_dir  # Directory for tensorboard files
         self.pretrained_networks = self.workspace_dir + '/pretrained_networks'
-        self.lasot_dir = 'PATH/LaSOT'
-        self.got10k_dir = 'PATH/GOT10k/train'
-        self.trackingnet_dir = 'PATH/TrackingNet'
-        self.coco_dir = 'PATH/COCO'
+        # self.lasot_dir = 'PATH/LaSOT'
+        # self.got10k_dir = 'PATH/GOT10k/train'
+        # self.trackingnet_dir = 'PATH/TrackingNet'
+        # self.coco_dir = 'PATH/COCO'
+
+        self.lasot_dir = '/media/atr17/HDD Storage/Datasets_Download/LaSOT/LaSOT'
+        self.got10k_dir = '/media/atr17/HDD Storage/Datasets_Download/Got10k'
+        self.trackingnet_dir = '/media/atr17/HDD Storage/Datasets_Download/TrackingNet'
+        self.coco_dir = '/media/atr17/HDD Storage/Datasets_Download/Coco17'
+        self.catheter_tracking_dir = '/media/atr17/HDD Storage/Datasets_Download/Catheter_Detection/Images'
+
+

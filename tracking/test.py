@@ -44,7 +44,7 @@ def run_tracker(tracker_name, tracker_param, run_id=None, dataset_name='otb', se
 def main():
     parser = argparse.ArgumentParser(description='run tracker on sequence or dataset')
     parser.add_argument('--tracker', type=str, default='aiatrack', help='name of tracking method')
-    parser.add_argument('--param', type=str, default='baseline', help='name of config file')
+    parser.add_argument('--param', type=str, default='catheter', help='name of config file')
     parser.add_argument('--id', type=int, default=None, help='the run ID')
     parser.add_argument('--dataset', type=str, default='lasot',
                         help='name of dataset (otb, nfs, uav, trackingnet, got_test, got_val, lasot, lasot_ext)')

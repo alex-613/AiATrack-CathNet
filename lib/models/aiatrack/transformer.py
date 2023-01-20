@@ -34,11 +34,18 @@ def check_valid(tensor, type_name):
 
 class Transformer(nn.Module):
 
+    """
+    Creates the transformer that we all know.
+    """
+
     def __init__(self, d_model=512, nhead=8, num_encoder_layers=6, num_decoder_layers=6,
                  dim_feedforward=2048, dropout=0.1, activation='relu', normalize_before=False,
                  divide_norm=False, use_AiA=True, match_dim=64, feat_size=400):
         super().__init__()
 
+        # d model is the model hidden dimension
+
+        # Create the encoder
         encoder_layer = TransformerEncoderLayer(d_model, nhead, dim_feedforward,
                                                 dropout, activation, normalize_before,
                                                 divide_norm=divide_norm, use_AiA=use_AiA,
@@ -168,12 +175,17 @@ class TransformerEncoderLayer(nn.Module):
                 src_key_padding_mask: Optional[Tensor] = None,
                 pos: Optional[Tensor] = None,
                 inr: Optional[Tensor] = None):
+        """
+        Please check Fig.3 of the paper for a better idea of what this encoder layer is doing
+        """
+        # The src is the output from the resnet 50, it's a flattened feature map at start with, then it evolves
         q = k = self.with_pos_embed(src, pos)  # Add pos to src
         if self.divide_norm:
             # Encoder divide by norm
             q = q / torch.norm(q, dim=-1, keepdim=True) * self.scale_factor
             k = k / torch.norm(k, dim=-1, keepdim=True)
         # src2 = self.self_attn(q, k, value=src)[0]
+        # Perform self attention between the queries and keys
         src2 = self.self_attn(query=q, key=k, value=src, pos_emb=inr, key_padding_mask=src_key_padding_mask)[0]
         # Add and norm
         src = src + self.dropout1(src2)
@@ -264,18 +276,19 @@ def _get_clones(module, N):
 
 
 def build_transformer(cfg):
+    # Calls the transformer class
     return Transformer(
-        d_model=cfg.MODEL.HIDDEN_DIM,
-        dropout=cfg.MODEL.TRANSFORMER.DROPOUT,
-        nhead=cfg.MODEL.TRANSFORMER.NHEADS,
-        dim_feedforward=cfg.MODEL.TRANSFORMER.DIM_FEEDFORWARD,
-        num_encoder_layers=cfg.MODEL.TRANSFORMER.ENC_LAYERS,
-        num_decoder_layers=cfg.MODEL.TRANSFORMER.DEC_LAYERS,
-        normalize_before=cfg.MODEL.TRANSFORMER.PRE_NORM,
-        divide_norm=cfg.MODEL.TRANSFORMER.DIVIDE_NORM,
-        use_AiA=cfg.MODEL.AIA.USE_AIA,
-        match_dim=cfg.MODEL.AIA.MATCH_DIM,
-        feat_size=cfg.MODEL.AIA.FEAT_SIZE
+        d_model=cfg.MODEL.HIDDEN_DIM, # 256
+        dropout=cfg.MODEL.TRANSFORMER.DROPOUT, # 0.1
+        nhead=cfg.MODEL.TRANSFORMER.NHEADS, # 8
+        dim_feedforward=cfg.MODEL.TRANSFORMER.DIM_FEEDFORWARD, # 2048
+        num_encoder_layers=cfg.MODEL.TRANSFORMER.ENC_LAYERS, # 6
+        num_decoder_layers=cfg.MODEL.TRANSFORMER.DEC_LAYERS, # 6
+        normalize_before=cfg.MODEL.TRANSFORMER.PRE_NORM, # false
+        divide_norm=cfg.MODEL.TRANSFORMER.DIVIDE_NORM, # false
+        use_AiA=cfg.MODEL.AIA.USE_AIA, # True
+        match_dim=cfg.MODEL.AIA.MATCH_DIM, # Hidden dimension of the AiA
+        feat_size=cfg.MODEL.AIA.FEAT_SIZE # Feature dimension of the AiA
     )
 
 

@@ -89,12 +89,14 @@ class Backbone(BackboneBase):
                  return_interm_layers: bool,
                  dilation: bool,
                  freeze_bn: bool):
+        # Batch norm
         norm_layer = FrozenBatchNorm2d if freeze_bn else nn.BatchNorm2d
         # Here is different from the original DETR because we use feature from block3
         backbone = getattr(resnet_module, name)(
             replace_stride_with_dilation=[False, dilation, False],
             pretrained=is_main_process(), norm_layer=norm_layer, last_layer='layer3')
-        num_channels = 256 if name in ('resnet18', 'resnet34') else 1024
+
+        num_channels = 256 if name in ('resnet18', 'resnet34') else 1024 # This is the number of dimensions in layer 3 if we use resnet 50
         super().__init__(backbone, train_backbone, num_channels, return_interm_layers)
 
 
@@ -117,11 +119,21 @@ class Joiner(nn.Sequential):
 
 
 def build_backbone(cfg):
+    """
+    Build the backbone to the AiA track framework
+
+    Args:
+        cfg (class:edict): This is a dicitonary contaning all of the settings you need in order to build your model
+    """
+    # First we build the positional encoding, default to be sine encoding
     position_embedding, inner_embedding = build_position_encoding(cfg)
+    # Set some conditionals
     train_backbone = cfg.TRAIN.BACKBONE_MULTIPLIER > 0
     return_interm_layers = cfg.MODEL.PREDICT_MASK
+    # Build the actual backbone, so resnet 50
     backbone = Backbone(cfg.MODEL.BACKBONE.TYPE, train_backbone, return_interm_layers,
                         cfg.MODEL.BACKBONE.DILATION, cfg.TRAIN.FREEZE_BACKBONE_BN)
+    # Joins the ResNet 50 backbone with the positional embedding. It simply grabs the tensor list and it appends the output, the positional encoding and inner embedding into a list
     model = Joiner(backbone, position_embedding, inner_embedding)
     model.num_channels = backbone.num_channels
     return model

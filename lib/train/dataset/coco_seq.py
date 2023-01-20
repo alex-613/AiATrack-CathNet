@@ -65,6 +65,7 @@ class MSCOCOSeq(BaseVideoDataset):
         if data_fraction is not None:
             self.sequence_list = random.sample(self.sequence_list, int(len(self.sequence_list) * data_fraction))
         self.seq_per_class = self._build_seq_per_class()
+        print(self.seq_per_class)
 
     def _get_sequence_list(self):
         ann_list = list(self.coco_set.anns.keys())

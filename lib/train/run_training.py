@@ -71,7 +71,7 @@ def run_training(script_name, config_name, cudnn_benchmark=True, local_rank=-1, 
 def main():
     parser = argparse.ArgumentParser(description='run a train scripts in train_settings')
     parser.add_argument('--script', type=str, default='aiatrack', help='name of the train script')
-    parser.add_argument('--config', type=str, default='baseline', help='name of the config file')
+    parser.add_argument('--config', type=str, default='catheter', help='name of the config file')
     parser.add_argument('--cudnn_benchmark', type=bool, default=True,
                         help='set cudnn benchmark on (1) or off (0) (default is on)')
     parser.add_argument('--local_rank', type=int, default=-1, help='node rank for distributed training')
@@ -83,6 +83,7 @@ def main():
         torch.cuda.set_device(args.local_rank)
     else:
         torch.cuda.set_device(0)
+    # Run training line
     run_training(args.script, args.config, cudnn_benchmark=args.cudnn_benchmark,
                  local_rank=args.local_rank, save_dir=args.save_dir, base_seed=args.seed)
 
