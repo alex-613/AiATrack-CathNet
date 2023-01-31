@@ -22,3 +22,11 @@ lib/utils/__pycache__/
 logs/
 pretrained_networks/
 tracking/PATH/
+checkpoints_catheter/
+checkpoints_catheter_100 epochs/
+checkpoints_catheter_500 samples/
+checkpoints_catheter_1000 samples/
+checkpoints_LaSOTV1/
+checkpoints_LASOTV2/
+checkpoint_catheter_500\ samples_del\ iou\ layer/
+baseline_lasot/

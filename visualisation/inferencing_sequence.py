@@ -92,7 +92,7 @@ def plot_results(pil_img, box):
     # Convert the bounding boxes into the xminymin, yminymax data style
     xmin, ymin, xmax, ymax = box_cxcywh_to_xyxy(cx, cy, w, h)
 
-    ax.add_patch(plt.Rectangle((xmin, ymin), w, h, fill=False, color = colors[0], linewidth=3))
+    ax.add_patch(plt.Rectangle((cx, cy), w, h, fill=False, color = colors[0], linewidth=3))
 
     plt.axis('off')
     plt.show()
@@ -108,10 +108,10 @@ def box_cxcywh_to_xyxy(x_c, y_c, w, h):
 
 
 if __name__ == '__main__':
-    bbox_path = '/home/atr17/PhD/Research/Phase_5_Al_model_building/DETR_net/AiATrack/AiATrack/tracking/PATH/AiATrack/test/tracking_results/aiatrack/catheter'
+    bbox_path = '/home/atr17/PhD/Research/Phase_5_Al_model_building/DETR_net/AiATrack/AiATrack/tracking/PATH/AiATrack/test/tracking_results/aiatrack/catheter_pretrained'
     root_path = '/media/atr17/HDD Storage/Datasets_Download/Catheter_Detection/Images/Val'
 
-    seq_no = '55'
+    seq_no = '62'
 
     names, paths = get_names(root_path,seq_no)
 

@@ -105,7 +105,7 @@ def plot_results(pil_img, box):
     # Convert the bounding boxes into the xminymin, yminymax data style
     xmin, ymin, xmax, ymax = box_cxcywh_to_xyxy(cx, cy, w, h)
 
-    ax.add_patch(plt.Rectangle((xmin, ymin), w, h, fill=False, color = colors[0], linewidth=3))
+    ax.add_patch(plt.Rectangle((cx, cy), w, h, fill=False, color = colors[0], linewidth=3))
 
     plt.axis('off')
     plt.show()
@@ -115,7 +115,7 @@ if __name__ == '__main__':
     bbox_path = '/home/atr17/PhD/Research/Phase_5_Al_model_building/DETR_net/AiATrack/AiATrack/tracking/PATH/AiATrack/test/tracking_results/aiatrack/baseline'
     root_path = '/media/atr17/HDD Storage/Datasets_Download/LaSOT/LaSOT'
 
-    seq_name = 'robot-1'
+    seq_name = 'robot-5'
 
     names, paths = get_names(root_path, seq_name)
 

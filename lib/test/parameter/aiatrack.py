@@ -20,9 +20,9 @@ def parameters(yaml_name: str):
     params.search_size = cfg.TEST.SEARCH_SIZE
 
     # Network checkpoint path
-    params.checkpoint = os.path.join(save_dir, 'checkpoints/train/aiatrack/%s/AIATRACK_ep%04d.pth.tar' %
-                                     (yaml_name, cfg.TEST.EPOCH))
-    params.checkpoint = "/home/atr17/PhD/Research/Phase_5_Al_model_building/DETR_net/AiATrack/AiATrack/checkpoints/train/aiatrack/baseline/AIATRACK_ep0500.pth.tar"
+    # params.checkpoint = os.path.join(save_dir, 'checkpoints/train/aiatrack/%s/AIATRACK_ep%04d.pth.tar' %
+    #                                  (yaml_name, cfg.TEST.EPOCH))
+    params.checkpoint = "/home/atr17/PhD/Research/Phase_5_Al_model_building/DETR_net/AiATrack/AiATrack/checkpoints/train/aiatrack/baseline/AIATRACK_ep0400.pth.tar"
 
     # Whether to save boxes from all queries
     params.save_all_boxes = False

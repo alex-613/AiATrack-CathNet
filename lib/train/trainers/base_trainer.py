@@ -84,6 +84,8 @@ class BaseTrainer:
                 if load_latest:
                     self.load_checkpoint()
 
+                    # Here, you may decide to remove some of the weights in the final layer in order to get better training performance via transfer learning
+
                 for epoch in range(self.epoch + 1, max_epochs + 1):
                     self.epoch = epoch
 
@@ -202,6 +204,22 @@ class BaseTrainer:
         # Load network
         checkpoint_dict = torch.load(checkpoint_path)
 
+        # In the case that we are using transfer learning, we will remove some weights at this point:
+        # We will try the following
+        # TODO: Remove the weights on the final IOU fully connected prediction layer
+
+        # del checkpoint_dict['net']['iou_head.fc.linear.weight']
+        # del checkpoint_dict['net']['iou_head.fc.linear.bias']
+        # del checkpoint_dict['net']['iou_head.iou_predictor.weight']
+        # del checkpoint_dict['net']['iou_head.iou_predictor.bias']
+
+        # TODO: Remove the weights on the decoder's second linear fully connected layer
+
+        del checkpoint_dict['net']['transformer.decoder.layers.0.linear2.weight']
+        del checkpoint_dict['net']['transformer.decoder.layers.0.linear2.bias']
+
+        # TODO: Remove the weights on the tl and br layers
+
         assert net_type == checkpoint_dict['net_type'], 'network is not of correct type'
 
         if fields is None:
@@ -217,7 +235,7 @@ class BaseTrainer:
             if key in ignore_fields:
                 continue
             if key == 'net':
-                net.load_state_dict(checkpoint_dict[key])
+                net.load_state_dict(checkpoint_dict[key], strict=False)
             elif key == 'optimizer':
                 self.optimizer.load_state_dict(checkpoint_dict[key])
             else:
